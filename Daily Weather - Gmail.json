@@ -1,0 +1,172 @@
+{
+  "name": "Daily Weather - Gmail",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        -32
+      ],
+      "id": "f113b857-ad6b-4001-92c2-06928ead90d9",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openweathermap.org/data/2.5/weather",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "Mumbai"
+            },
+            {
+              "name": "appid",
+              "value": "5c8b41b62d4cb0264a7cb6147181e57a"
+            },
+            {
+              "name": "units",
+              "value": "metric"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -128,
+        -32
+      ],
+      "id": "c19278f9-89fc-4249-abf6-5001681785b8",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fa7683c3-0307-4a58-9af6-5cc8f1ed1734",
+              "name": "City",
+              "value": "={{$json[\"name\"]}}\n",
+              "type": "string"
+            },
+            {
+              "id": "713e3456-1809-41c0-92b8-bc8ff128d2c7",
+              "name": "Temperature",
+              "value": "={{$json[\"main\"][\"temp\"]}}\n",
+              "type": "string"
+            },
+            {
+              "id": "ade86abc-105d-4cea-98f8-02e38fc3923e",
+              "name": "Condition",
+              "value": "={{$json[\"weather\"][0][\"description\"]}}\n",
+              "type": "string"
+            },
+            {
+              "id": "8ed85a09-6313-4a40-bc43-24aa4df52227",
+              "name": "Humidity",
+              "value": "={{$json[\"main\"][\"humidity\"]}}\n",
+              "type": "string"
+            },
+            {
+              "id": "e58d5630-83c4-4c79-b998-bb4b07f10b7e",
+              "name": "Wind Speed",
+              "value": "={{$json[\"wind\"][\"speed\"]}}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        -32
+      ],
+      "id": "3cb99187-5ed5-49e6-a160-969e43e1f9dd",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sendTo": "kushal.jaiswal0901@gmail.com",
+        "subject": "Weather Update!",
+        "message": "=<p>Hello,</p>\n\n<p>Here is the current weather update:</p>\n\n<ul>\n  <li><strong>City:</strong> {{$json[\"City\"]}}</li>\n  <li><strong>Temperature:</strong> {{$json[\"Temperature\"]}} °C</li>\n  <li><strong>Condition:</strong> {{$json[\"Condition\"]}}</li>\n  <li><strong>Humidity:</strong> {{$json[\"Humidity\"]}} %</li>\n  <li><strong>Wind Speed:</strong> {{$json[\"Wind Speed\"]}} m/s</li>\n</ul>\n\n<p>Best regards,<br>\nKushal Jaiswal's Weather Bot</p>\n",
+        "options": {
+          "senderName": "Kushal Jaiswal"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        288,
+        -32
+      ],
+      "id": "f167252c-bd44-4c84-9947-382b9950ad36",
+      "name": "Send a message",
+      "webhookId": "c801efd6-3cfa-4a4b-848d-7513c7bd6e6e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SQbNQhtAvj6MtIB9",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7eaba085-1940-4301-9005-5cd70b5bced9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2f3ae5116009cfc5c4c583dc2578afa4bbcf6937d162f0f7079559bc57e5159d"
+  },
+  "id": "RNwe2kQCuhjhq6ME",
+  "tags": []
+}
